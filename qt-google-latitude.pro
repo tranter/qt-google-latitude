@@ -4,28 +4,36 @@
 #
 #-------------------------------------------------
 
-QT       += core gui webkit network
+QT  += core gui webkit network
 
 TARGET = qtlatitude
 TEMPLATE = app
 
-linux* {
-LIBS += ../qjson/build/lib/libqjson.so
 INCLUDEPATH += ../qjson/include
+
+linux* {
+    LIBS += ../qjson/build/lib/libqjson.so
 }
 
-win* {
-LIBS += ../qjson/build/lib/qjson0.lib
-INCLUDEPATH += ../qjson/include
+win32-g++ {
+    #MinGW compiler for Windows
+    message(Configured for Windows (Qt Version: $$QT_VERSION; $$QMAKE_CC))
+
+    LIBS += ../qjson/build/lib/libqjson0.a
+}
+
+win32-msvc* {
+    #MSVC compiler for Windows
+    LIBS += ../qjson/build/lib/qjson0.lib
+    message(Configured for Windows (Qt Version: $$QT_VERSION; $$QMAKE_CC))
 }
 
 macx* {
-LIBS += -F../qjson/build/lib -framework qjson
-INCLUDEPATH += ../qjson/include
+    LIBS += -F../qjson/build/lib -framework qjson
 }
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
+    mainwindow.cpp \
     form.cpp \
     oauth2.cpp \
     logindialog.cpp \

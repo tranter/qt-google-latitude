@@ -1,4 +1,3 @@
-#include <QDebug>
 #include <QDateTime>
 #include <QMessageBox>
 #include <QApplication>
@@ -21,8 +20,6 @@ LatitudeDataManager::~LatitudeDataManager()
 
 void LatitudeDataManager::getCurrentLocation(const QString& access_token)
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__;
-
     QString query = QString("https://www.googleapis.com/latitude/v1/currentLocation?access_token=%1")
             .arg(access_token);
     m_pNetworkAccessManager->get(QNetworkRequest(QUrl(query)));
@@ -30,8 +27,6 @@ void LatitudeDataManager::getCurrentLocation(const QString& access_token)
 
 void LatitudeDataManager::getLocationHistory(const QString& access_token)
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__;
-
     QString query = QString("https://www.googleapis.com/latitude/v1/location"
                             "?granularity=best"
                             "&max-results=10"
@@ -42,8 +37,6 @@ void LatitudeDataManager::getLocationHistory(const QString& access_token)
 
 void LatitudeDataManager::getLocationsFromAddress(const QString& address, const QString& apiKey)
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__;
-
     QString s = address;
     s.replace(" ","+");
 
@@ -53,21 +46,16 @@ void LatitudeDataManager::getLocationsFromAddress(const QString& address, const 
 
 void LatitudeDataManager::insertLocation(const QVariant& location, const QString& access_token)
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__;
-
     qlonglong t;
     QString longitude = location.toMap()["longitude"].toString();
     QString latitude = location.toMap()["latitude"].toString();
     if (location.toMap().find("timestampMs") != location.toMap().end()) {
         t = location.toMap()["timestampMs"].toLongLong();
-        qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__ << "Found time data=" << t;
     } else {
         t = QDateTime::currentDateTime().toMSecsSinceEpoch();
-        qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__ << "No time data, use current time=" << t;
     }
     if (t == 0) {
         t = QDateTime::currentDateTime().toMSecsSinceEpoch();
-        qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__ << "Change time data to current=" << t;
     }
 
     QString query = QString("https://www.googleapis.com/latitude/v1/location"
@@ -91,10 +79,7 @@ void LatitudeDataManager::insertLocation(const QVariant& location, const QString
 
 void LatitudeDataManager::deleteLocation(int row, const QString& access_token)
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__ << "row=" << row;
     QVariant location = m_locationHistory[row];
-    QString longitude = location.toMap()["longitude"].toString();
-    QString latitude = location.toMap()["latitude"].toString();
     qlonglong t = location.toMap()["timestampMs"].toLongLong();
 
     QString query = QString("https://www.googleapis.com/latitude/v1/location/"+QString::number(t)+
@@ -104,8 +89,6 @@ void LatitudeDataManager::deleteLocation(int row, const QString& access_token)
 
 void LatitudeDataManager::insertCurrentLocation(int row, const QString& access_token)
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__ << "row=" << row;
-
     QVariant location = m_locationHistory[row];
     QString longitude = location.toMap()["longitude"].toString();
     QString latitude = location.toMap()["latitude"].toString();
@@ -130,13 +113,9 @@ void LatitudeDataManager::insertCurrentLocation(int row, const QString& access_t
 
 void LatitudeDataManager::replyFinished(QNetworkReply *reply)
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__ << reply->url();
-
     QString url = reply->url().toString();
     QString json = reply->readAll();
     int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-//    qDebug() << "****************###, HTTP status code=" << statusCode << ", Reply = " << json;
-//    qDebug() << "****************###, url=" << url;
 
     if (statusCode == 204) {
         if (reply->operation() == QNetworkAccessManager::DeleteOperation) {

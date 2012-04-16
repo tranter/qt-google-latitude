@@ -1,7 +1,6 @@
 #include "logindialog.h"
 #include "ui_logindialog.h"
 
-#include <QDebug>
 #include <QWebView>
 
 LoginDialog::LoginDialog(QWidget *parent) :
@@ -22,18 +21,15 @@ LoginDialog::~LoginDialog()
 void LoginDialog::loadStarted()
 {
     QApplication::setOverrideCursor(Qt::WaitCursor);
-    qDebug() << "loadStarted";
 }
 
-void LoginDialog::loadFinished(bool b)
+void LoginDialog::loadFinished(bool /*b*/)
 {
     QApplication::restoreOverrideCursor();
-    qDebug() << "loadFinished with" << b;
 }
 
 void LoginDialog::urlChanged(const QUrl &url)
 {
-    qDebug() << "URL =" << url;
     QString str = url.toString();
     if(str.indexOf("access_token") != -1)
     {
@@ -80,6 +76,5 @@ QString LoginDialog::code()
 
 void LoginDialog::setLoginUrl(const QString& url)
 {
-    //ui->webView->setUrl(QUrl(""));
    ui->webView->setUrl(QUrl(url));
 }

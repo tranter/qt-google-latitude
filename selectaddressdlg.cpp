@@ -1,4 +1,3 @@
-#include <QDebug>
 #include <QDateTime>
 
 #include "selectaddressdlg.h"
@@ -22,8 +21,6 @@ SelectAddressDlg::~SelectAddressDlg()
 
 void SelectAddressDlg::initData(const QVariantList& list)
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__;
-
     QTableWidgetItem* itemAddress;
     QTableWidgetItem* itemCountry;
     m_list = list;
@@ -47,20 +44,16 @@ void SelectAddressDlg::initData(const QVariantList& list)
 }
 const QVariant& SelectAddressDlg::getCoordinate()
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__;
-
     return m_list[m_selectedRow];
 }
 
 void SelectAddressDlg::onAcceptedButton()
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__;
     m_selectedRow = ui->twList->selectedRanges()[0].topRow();
 }
 
-void SelectAddressDlg::onCellDoubleClicked(int row,int column)
+void SelectAddressDlg::onCellDoubleClicked(int row, int /*column*/)
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__;
     m_selectedRow = row;
     accept();
 }

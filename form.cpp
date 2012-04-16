@@ -1,4 +1,3 @@
-#include <QDebug>
 #include <QDateTime>
 #include <QMessageBox>
 #include <QWebPage>
@@ -13,7 +12,8 @@
 #include "latitude_data_manager.h"
 #include "selectaddressdlg.h"
 
-/*! Workaround pan/zoom problem with Google Map and QWebView:
+/*! \brief Workaround pan/zoom problem with Google Map and QWebView:
+ *
  *  http://stackoverflow.com/questions/6184240/map-doesnt-respond-on-mouse-clicks-with-google-maps-api-v3-and-qwebview
  */
 class MyWebPage : public QWebPage
@@ -111,11 +111,8 @@ void Form::startLogin(bool bForce)
 
 void Form::loginDone()
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__;
-
     m_loginCompleted = true;
     if (m_pageLoaded) {
-        qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__ << "begin get current location...";
         m_pManager->getCurrentLocation(m_pOauth2->accessToken());
     }
 }
@@ -124,7 +121,6 @@ void Form::loginDone()
  */
 void Form::onErrorOccured(const QString& error)
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__ << error;
     if(error.indexOf("Invalid Credentials") != -1)
     {
         startLogin(true);
@@ -137,8 +133,6 @@ void Form::onErrorOccured(const QString& error)
 
 void Form::showCurrentLocation()
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__;
-
     m_pManager->getCurrentLocation(m_pOauth2->accessToken());
 }
 
@@ -151,13 +145,10 @@ QString Form::convertMs2String(qlonglong ms)
 
 void Form::onLoadFinished(bool ok)
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__ << ok;
-
     if (ok) {
         disconnect(ui->webView, SIGNAL(loadFinished(bool)),this, SLOT(onLoadFinished(bool)));
         m_pageLoaded = true;
         if (m_loginCompleted) {
-            qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__ << "begin get current location...";
             m_pManager->getCurrentLocation(m_pOauth2->accessToken());
         }
     }
@@ -165,7 +156,6 @@ void Form::onLoadFinished(bool ok)
 
 void Form::gotoLocation(const QVariant& location)
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__;
     qlonglong t = 0;
     int zoom = ui->cbZoom->currentText().toInt();
     QString type = ui->cbMapType->currentText();
@@ -173,9 +163,6 @@ void Form::gotoLocation(const QVariant& location)
     m_location = location;
     if (location.toMap().find("timestampMs") != location.toMap().end()) {
         t = location.toMap()["timestampMs"].toLongLong();
-        qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__ << "Found datetime t=" << t;
-    } else {
-        qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__ << "No datetime present...";
     }
 
     ui->webView->page()->currentFrame()->documentElement().evaluateJavaScript(
@@ -200,8 +187,6 @@ void Form::gotoLocation(const QVariant& location)
 
 void Form::onCurrentLocationReady()
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__;
-
     const QVariant& location = m_pManager->currentLocation();
     gotoLocation(location);
     m_pManager->getLocationHistory(m_pOauth2->accessToken());
@@ -209,14 +194,11 @@ void Form::onCurrentLocationReady()
 
 void Form::getHistoryLocation()
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__;
-
     m_pManager->getLocationHistory(m_pOauth2->accessToken());
 }
 
 void Form::onLocationHistoryReady()
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__;
     const QVariantList& history = m_pManager->locationHistory();
     QTableWidgetItem* itemTime;
     QTableWidgetItem* itemLat;
@@ -243,8 +225,6 @@ void Form::onLocationHistoryReady()
 
 void Form::onAddressLocationsListReady()
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__;
-
     QVariantMap map;
     const QVariantList& list = m_pManager->addressLocationsList();
     int len = list.size();
@@ -254,14 +234,10 @@ void Form::onAddressLocationsListReady()
         map.insert("latitude",list[0].toMap()["Point"].toMap()["coordinates"].toList()[1]);
         gotoLocation(QVariant(map));
     } else {
-        qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__ << len;
         SelectAddressDlg dlg(this);
         dlg.initData(list);
         if (dlg.exec() == QDialog::Accepted) {
             QVariant var = dlg.getCoordinate();
-//            qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__
-//                     << "Longitude=" << var.toMap()["Point"].toMap()["coordinates"].toList()[0].toString();
-
             map.insert("longitude",var.toMap()["Point"].toMap()["coordinates"].toList()[0]);
             map.insert("latitude",var.toMap()["Point"].toMap()["coordinates"].toList()[1]);
             gotoLocation(QVariant(map));
@@ -269,16 +245,13 @@ void Form::onAddressLocationsListReady()
     }
 }
 
-void Form::onHistoryCellDoubleClicked(int row,int column)
+void Form::onHistoryCellDoubleClicked(int row,int /*column*/)
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__ << "row=" << row << ", column=" << column;
-
     gotoLocation(m_pManager->locationHistory()[row]);
 }
 
 void Form::onClickedGo()
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__;
     if (ui->cbAddress->currentText().isEmpty())
     {
         const QVariant& location = m_pManager->currentLocation();
@@ -292,16 +265,11 @@ void Form::onClickedGo()
 
 void Form::onClickedInsert()
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__
-             << "longitude=" << m_location.toMap()["longitude"].toString();
-
     m_pManager->insertLocation(m_location,m_pOauth2->accessToken());
 }
 
 void Form::saveSettings()
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__;
-
     m_pSettings->setValue("zoom",ui->cbZoom->currentText());
     m_pSettings->setValue("map_type",ui->cbMapType->currentText());
     m_pSettings->setValue("address",ui->cbAddress->currentText());
@@ -314,9 +282,8 @@ void Form::saveSettings()
     m_pSettings->setValue("list_addresses",list);
 }
 
-void Form::twHistoryCustomMenu(const QPoint& point)
+void Form::twHistoryCustomMenu(const QPoint& /*point*/)
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__;
     QMenu menu(this);
     menu.addAction(m_aDelete);
     menu.addAction(m_aInsertCurrentLocation);
@@ -325,25 +292,21 @@ void Form::twHistoryCustomMenu(const QPoint& point)
 
 void Form::onLocationInserted()
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__;
     getHistoryLocation();
 }
 
 void Form::onLocationDeleted()
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__;
     getHistoryLocation();
 }
 
 void Form::onDelete()
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__;
     int row = ui->twHistory->selectedRanges()[0].topRow();
     m_pManager->deleteLocation(row,m_pOauth2->accessToken());
 }
 
 void Form::onInsertCurrentLocation() {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__;
     int row = ui->twHistory->selectedRanges()[0].topRow();
     m_pManager->insertCurrentLocation(row,m_pOauth2->accessToken());
 }

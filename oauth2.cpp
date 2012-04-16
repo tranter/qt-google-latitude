@@ -1,5 +1,4 @@
 #include "oauth2.h"
-#include <QDebug>
 #include <QApplication>
 #include "logindialog.h"
 #include <QSettings>
@@ -54,7 +53,6 @@ void OAuth2::accessTokenObtained()
 void OAuth2::codeObtained()
 {
     m_strCode = m_pLoginDialog->code();
-    qDebug() << "OAuth2::codeObtained()" << m_strCode;
 
     QUrl url("https://accounts.google.com/o/oauth2/token");
     QNetworkRequest request;
@@ -104,7 +102,6 @@ QString OAuth2::loginUrl()
 {
     QString str = QString("%1?client_id=%2&redirect_uri=%3&response_type=token&scope=%4").arg(m_strEndPoint).arg(m_strClientID).
             arg(m_strRedirectURI).arg(m_strScope);
-    qDebug() << "Login URL" << str;
     return str;
 }
 
@@ -112,7 +109,6 @@ QString OAuth2::permanentLoginUrl()
 {
     QString str = QString("%1?client_id=%2&redirect_uri=%3&response_type=code&scope=%4&approval_prompt=force&access_type=offline").
             arg(m_strEndPoint).arg(m_strClientID).arg(m_strRedirectURI).arg(m_strScope);
-    qDebug() << "permanentLoginUrl URL" << str;
     return str;
 }
 
@@ -173,9 +169,6 @@ void OAuth2::getAccessTokenFromRefreshToken()
     str += "&refresh_token=" + m_strRefreshToken;
 
     QByteArray params = str.toLatin1();
-
-
     m_pNetworkAccessManager->post(request, params);
-
 }
 
