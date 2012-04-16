@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/html">
+        <file>google_maps.html</file>
+    </qresource>
+    <qresource prefix="/images">
+        <file>images/location-icon.png</file>
+        <file>images/history-locations.png</file>
+        <file>images/insert.png</file>
+        <file>images/go.png</file>
+        <file>images/ics.gif</file>
+    </qresource>
+</RCC>
