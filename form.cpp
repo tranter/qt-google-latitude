@@ -113,6 +113,7 @@ void Form::loginDone()
 {
     m_loginCompleted = true;
     if (m_pageLoaded) {
+        clearTwHistory();
         m_pManager->getCurrentLocation(m_pOauth2->accessToken());
     }
 }
@@ -302,11 +303,28 @@ void Form::onLocationDeleted()
 
 void Form::onDelete()
 {
-    int row = ui->twHistory->selectedRanges()[0].topRow();
+    QList<QTableWidgetSelectionRange> selectedRanges = ui->twHistory->selectedRanges();
+    if( ! selectedRanges.count() ) {
+        return;
+    }
+
+    int row = selectedRanges.first().topRow();
     m_pManager->deleteLocation(row,m_pOauth2->accessToken());
 }
 
-void Form::onInsertCurrentLocation() {
-    int row = ui->twHistory->selectedRanges()[0].topRow();
+void Form::onInsertCurrentLocation()
+{
+    QList<QTableWidgetSelectionRange> selectedRanges = ui->twHistory->selectedRanges();
+    if( ! selectedRanges.count() ) {
+        return;
+    }
+
+    int row = selectedRanges.first().topRow();
     m_pManager->insertCurrentLocation(row,m_pOauth2->accessToken());
+}
+
+void Form::clearTwHistory()
+{
+    ui->twHistory->clear();
+    ui->twHistory->setRowCount(0);
 }
