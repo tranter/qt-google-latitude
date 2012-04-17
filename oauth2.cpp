@@ -13,9 +13,10 @@ OAuth2::OAuth2(QWidget* parent)
 {
     m_strEndPoint = "https://accounts.google.com/o/oauth2/auth";
     m_strScope = "https://www.googleapis.com/auth/latitude.all.best"; //Access to Latitude service
-    m_strClientID = "476807742904-1e2qesck2a151t6envel2756heus7ddt.apps.googleusercontent.com";
-    m_strClientSecret = "Rnw6zVKOmkFG9aspgiK3jMRm";
-    m_strRedirectURI = "http://www.ics.com/oauth2callback";
+
+    m_strClientID = "YOUR_CLIENT_ID_HERE";
+    m_strClientSecret = "YOUR_CLIENT_SECRET_HERE";
+    m_strRedirectURI = "YOUR_REDIRECT_URI_HERE";
 
     m_pParent = parent;
     m_pLoginDialog = NULL;
@@ -28,7 +29,6 @@ OAuth2::OAuth2(QWidget* parent)
     m_strRefreshToken = settings.value("refresh_token", "").toString();
 
     m_apiKeyGeocoding = "ABQIAAAA672lORl8GepdWKC0IpTyLBRwyA1oHr6mUau5K-dsEYfkoQ5xchQi9OlnyPRXXvt0X-CWsz8S660ZVg";
-
 }
 
 QString OAuth2::geocodingKey()
