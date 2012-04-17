@@ -24,7 +24,7 @@
      <x>0</x>
      <y>0</y>
      <width>870</width>
-     <height>23</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -33,6 +33,7 @@
     </property>
     <addaction name="actionHistory_Locations"/>
     <addaction name="actionShow_Current_Location"/>
+    <addaction name="actionNewLogin"/>
     <addaction name="actionExit"/>
    </widget>
    <addaction name="menuFile"/>
@@ -59,6 +60,15 @@
    </property>
    <property name="text">
     <string>History Locations</string>
+   </property>
+  </action>
+  <action name="actionNewLogin">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/images/images/list-add-user.png</normaloff>:/images/images/list-add-user.png</iconset>
+   </property>
+   <property name="text">
+    <string>New Login</string>
    </property>
   </action>
  </widget>

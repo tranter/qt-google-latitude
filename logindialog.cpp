@@ -15,6 +15,7 @@ LoginDialog::LoginDialog(QWidget *parent) :
 
 LoginDialog::~LoginDialog()
 {
+    QApplication::restoreOverrideCursor();
     delete ui;
 }
 

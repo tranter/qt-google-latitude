@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionExit,SIGNAL(triggered()),this,SLOT(onActionExit()));
     connect(ui->actionShow_Current_Location,SIGNAL(triggered()),this,SLOT(onActionShow()));
     connect(ui->actionHistory_Locations,SIGNAL(triggered()),this,SLOT(onActionHistoryLocation()));
+    connect(ui->actionNewLogin,SIGNAL(triggered()),this,SLOT(onNewLogin()));
 }
 
 MainWindow::~MainWindow()
@@ -40,4 +41,9 @@ void MainWindow::onActionShow()
 void MainWindow::onActionHistoryLocation()
 {
     m_pForm->getHistoryLocation();
+}
+
+void MainWindow::onNewLogin()
+{
+    m_pForm->startLogin(true);
 }

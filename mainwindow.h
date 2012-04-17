@@ -23,6 +23,7 @@ private slots:
     void onActionExit();
     void onActionShow();
     void onActionHistoryLocation();
+    void onNewLogin();
 
 private:
     Ui::MainWindow *ui;

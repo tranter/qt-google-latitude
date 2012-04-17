@@ -13,15 +13,12 @@ OAuth2::OAuth2(QWidget* parent)
 {
     m_strEndPoint = "https://accounts.google.com/o/oauth2/auth";
     m_strScope = "https://www.googleapis.com/auth/latitude.all.best"; //Access to Latitude service
-    m_strClientID = "YOUR_CLIENT_ID_HERE";
-    m_strClientSecret = "YOUR_CLIENT_SECRET_HERE";
-    m_strRedirectURI = "YOUR_REDIRECT_URI_HERE";
+    m_strClientID = "476807742904-1e2qesck2a151t6envel2756heus7ddt.apps.googleusercontent.com";
+    m_strClientSecret = "Rnw6zVKOmkFG9aspgiK3jMRm";
+    m_strRedirectURI = "http://www.ics.com/oauth2callback";
 
-    m_pLoginDialog = new LoginDialog(parent);
     m_pParent = parent;
-
-    connect(m_pLoginDialog, SIGNAL(accessTokenObtained()), this, SLOT(accessTokenObtained()));
-    connect(m_pLoginDialog, SIGNAL(codeObtained()), this, SLOT(codeObtained()));
+    m_pLoginDialog = NULL;
 
     m_pNetworkAccessManager = new QNetworkAccessManager(this);
     connect(m_pNetworkAccessManager, SIGNAL(finished(QNetworkReply*)),
@@ -30,7 +27,7 @@ OAuth2::OAuth2(QWidget* parent)
     QSettings settings("ICS", "QtLatitude");
     m_strRefreshToken = settings.value("refresh_token", "").toString();
 
-    m_apiKeyGeocoding = "YOUR_GEOCODING_API_HERE";
+    m_apiKeyGeocoding = "ABQIAAAA672lORl8GepdWKC0IpTyLBRwyA1oHr6mUau5K-dsEYfkoQ5xchQi9OlnyPRXXvt0X-CWsz8S660ZVg";
 
 }
 
@@ -93,6 +90,10 @@ void OAuth2::replyFinished(QNetworkReply* reply)
      }
     m_strAccessToken = result.toMap()["access_token"].toString();
     emit loginDone();
+    if (m_pLoginDialog != NULL) {
+        delete m_pLoginDialog;
+        m_pLoginDialog = NULL;
+    }
 }
 
 
@@ -136,6 +137,13 @@ void OAuth2::startLogin(bool bForce)
 
     if(m_strRefreshToken.isEmpty() || bForce)
     {
+        if (m_pLoginDialog != NULL) {
+            delete m_pLoginDialog;
+        }
+        m_pLoginDialog = new LoginDialog(m_pParent);
+        connect(m_pLoginDialog, SIGNAL(accessTokenObtained()), this, SLOT(accessTokenObtained()));
+        connect(m_pLoginDialog, SIGNAL(codeObtained()), this, SLOT(codeObtained()));
+
         m_pLoginDialog->setLoginUrl(permanentLoginUrl());
         m_pLoginDialog->show();
     }
