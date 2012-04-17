@@ -325,6 +325,6 @@ void Form::onInsertCurrentLocation()
 
 void Form::clearTwHistory()
 {
-    ui->twHistory->clear();
+    ui->twHistory->clearContents();
     ui->twHistory->setRowCount(0);
 }
