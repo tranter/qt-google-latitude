@@ -327,4 +327,5 @@ void Form::clearTwHistory()
 {
     ui->twHistory->clear();
     ui->twHistory->setRowCount(0);
+    ui->twHistory->setHorizontalHeaderLabels( QStringList(tr("Time")) << tr("Lat") << tr("Lng") );
 }
