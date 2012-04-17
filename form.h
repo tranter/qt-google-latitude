@@ -42,6 +42,9 @@ private slots:
     void onLocationDeleted();
 
 private:
+    void clearTwHistory();
+
+private:
     Ui::Form *ui;
     LatitudeDataManager* m_pManager;
     OAuth2* m_pOauth2;

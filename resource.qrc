@@ -8,6 +8,5 @@
         <file>images/insert.png</file>
         <file>images/go.png</file>
         <file>images/ics.gif</file>
-        <file>images/list-add-user.png</file>
     </qresource>
 </RCC>

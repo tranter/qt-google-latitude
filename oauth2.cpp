@@ -39,7 +39,7 @@ QString OAuth2::geocodingKey()
 
 void OAuth2::accessTokenObtained()
 {
-    QSettings settings("ICS", "Google API Latitude Client");
+    QSettings settings("ICS", "QtLatitude");
     m_strAccessToken = m_pLoginDialog->accessToken();
     settings.setValue("access_token", m_strAccessToken);
     m_pLoginDialog->setLoginUrl("");
@@ -85,7 +85,7 @@ void OAuth2::replyFinished(QNetworkReply* reply)
     m_strRefreshToken = result.toMap()["refresh_token"].toString();
     if(!m_strRefreshToken.isEmpty())
     {
-        QSettings settings("ICS", "Google API Latitude Client");
+        QSettings settings("ICS", "QtLatitude");
         settings.setValue("refresh_token", m_strRefreshToken);
      }
     m_strAccessToken = result.toMap()["access_token"].toString();
