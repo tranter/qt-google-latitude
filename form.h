@@ -49,6 +49,8 @@ private:
     LatitudeDataManager* m_pManager;
     OAuth2* m_pOauth2;
     QSettings* m_pSettings;
+    QString m_strCompanyName;
+    QString m_strAppName;
     bool m_pageLoaded;
     bool m_loginCompleted;
     QVariant m_location;

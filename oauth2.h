@@ -17,11 +17,18 @@ public:
     QString accessToken();
     bool isAuthorized();
     void startLogin(bool bForce);
+    void setCompanyName(const QString& companyName) {m_strCompanyName = companyName;}
+    void setAppName(const QString& appName) {m_strAppName = appName;}
 
     QString geocodingKey();
 
     QString loginUrl();
     QString permanentLoginUrl();
+
+    QString getAccessToken() {return m_strAccessToken;}
+    void setAccessToken(const QString& access_token) {m_strAccessToken = access_token;}
+    QString getRefreshToken() { return m_strRefreshToken; }
+    void setRefreshToken(const QString& refresh_token) {m_strRefreshToken = refresh_token;}
 
 signals:
     void loginDone();
@@ -47,6 +54,9 @@ private:
     QString m_strClientSecret;
     QString m_strRedirectURI;
     QString m_strResponseType;
+
+    QString m_strCompanyName;
+    QString m_strAppName;
 
     LoginDialog* m_pLoginDialog;
     QWidget* m_pParent;

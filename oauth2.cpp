@@ -25,9 +25,6 @@ OAuth2::OAuth2(QWidget* parent)
     connect(m_pNetworkAccessManager, SIGNAL(finished(QNetworkReply*)),
             this, SLOT(replyFinished(QNetworkReply*)));
 
-    QSettings settings("ICS", "QtLatitude");
-    m_strRefreshToken = settings.value("refresh_token", "").toString();
-
     m_apiKeyGeocoding = "ABQIAAAA672lORl8GepdWKC0IpTyLBRwyA1oHr6mUau5K-dsEYfkoQ5xchQi9OlnyPRXXvt0X-CWsz8S660ZVg";
 }
 
@@ -83,11 +80,6 @@ void OAuth2::replyFinished(QNetworkReply* reply)
         return;
     }
     m_strRefreshToken = result.toMap()["refresh_token"].toString();
-    if(!m_strRefreshToken.isEmpty())
-    {
-        QSettings settings("ICS", "QtLatitude");
-        settings.setValue("refresh_token", m_strRefreshToken);
-     }
     m_strAccessToken = result.toMap()["access_token"].toString();
     emit loginDone();
     if (m_pLoginDialog != NULL) {

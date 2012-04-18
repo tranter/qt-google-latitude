@@ -37,6 +37,13 @@ Form::Form(QWidget *parent) :
     ui(new Ui::Form)
 {
     ui->setupUi(this);
+    m_pOauth2 = new OAuth2(this);
+
+    m_strCompanyName = "ICS";
+    m_strAppName = "QtLatitude";
+    m_pOauth2->setCompanyName(m_strCompanyName);
+    m_pOauth2->setAppName(m_strAppName);
+
     m_pManager = new LatitudeDataManager();
     m_pageLoaded = false;
     m_loginCompleted = false;
@@ -46,8 +53,6 @@ Form::Form(QWidget *parent) :
     ui->twHistory->setColumnWidth(0,110);
     ui->twHistory->setColumnWidth(1,50);
     ui->twHistory->setColumnWidth(2,50);
-
-    m_pOauth2 = new OAuth2(this);
 
     connect(m_pOauth2, SIGNAL(loginDone()), this, SLOT(loginDone()));
     connect(m_pManager, SIGNAL(errorOccured(QString)),this,SLOT(onErrorOccured(QString)));
@@ -62,7 +67,9 @@ Form::Form(QWidget *parent) :
     connect(ui->pbInsert, SIGNAL(clicked()),this, SLOT(onClickedInsert()));
 
     // Load settings
-    m_pSettings = new QSettings("ICS", "Google API Latitude Client");
+    m_pSettings = new QSettings(m_strCompanyName, m_strAppName);
+    m_pOauth2->setAccessToken(m_pSettings->value("access_token").toString());
+    m_pOauth2->setRefreshToken(m_pSettings->value("refresh_token").toString());
     QVariant zoom = m_pSettings->value("zoom");
     int pos = ui->cbZoom->findText(zoom.toString());
     if (pos == -1) {
@@ -271,6 +278,8 @@ void Form::onClickedInsert()
 
 void Form::saveSettings()
 {
+    m_pSettings->setValue("access_token",m_pOauth2->accessToken());
+    m_pSettings->setValue("refresh_token",m_pOauth2->getRefreshToken());
     m_pSettings->setValue("zoom",ui->cbZoom->currentText());
     m_pSettings->setValue("map_type",ui->cbMapType->currentText());
     m_pSettings->setValue("address",ui->cbAddress->currentText());
