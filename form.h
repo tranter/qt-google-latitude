@@ -47,7 +47,7 @@ private:
 private:
     Ui::Form *ui;
     LatitudeDataManager* m_pManager;
-    OAuth2* m_pOauth2;
+    OAuth2* m_pOAuth2;
     QSettings* m_pSettings;
     QString m_strCompanyName;
     QString m_strAppName;

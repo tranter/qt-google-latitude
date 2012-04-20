@@ -37,12 +37,10 @@ Form::Form(QWidget *parent) :
     ui(new Ui::Form)
 {
     ui->setupUi(this);
-    m_pOauth2 = new OAuth2(this);
+    m_pOAuth2 = new OAuth2(this);
 
-    m_strCompanyName = "ICS";
+    m_strCompanyName = "YOU_COMPANY_NAME_HERE";
     m_strAppName = "QtLatitude";
-    m_pOauth2->setCompanyName(m_strCompanyName);
-    m_pOauth2->setAppName(m_strAppName);
 
     m_pManager = new LatitudeDataManager();
     m_pageLoaded = false;
@@ -54,7 +52,8 @@ Form::Form(QWidget *parent) :
     ui->twHistory->setColumnWidth(1,50);
     ui->twHistory->setColumnWidth(2,50);
 
-    connect(m_pOauth2, SIGNAL(loginDone()), this, SLOT(loginDone()));
+    connect(m_pOAuth2, SIGNAL(loginDone()), this, SLOT(loginDone()));
+    connect(m_pOAuth2, SIGNAL(sigErrorOccured(QString)),this,SLOT(onErrorOccured(QString)));
     connect(m_pManager, SIGNAL(errorOccured(QString)),this,SLOT(onErrorOccured(QString)));
     connect(m_pManager, SIGNAL(currentLocationReady()),this,SLOT(onCurrentLocationReady()));
     connect(m_pManager, SIGNAL(locationHistoryReady()),this,SLOT(onLocationHistoryReady()));
@@ -68,8 +67,10 @@ Form::Form(QWidget *parent) :
 
     // Load settings
     m_pSettings = new QSettings(m_strCompanyName, m_strAppName);
-    m_pOauth2->setAccessToken(m_pSettings->value("access_token").toString());
-    m_pOauth2->setRefreshToken(m_pSettings->value("refresh_token").toString());
+    m_pOAuth2->setAccessToken(m_pSettings->value("access_token").toString());
+    m_pOAuth2->setRefreshToken(m_pSettings->value("refresh_token").toString());
+    m_pOAuth2->setSettings(m_pSettings);
+
     QVariant zoom = m_pSettings->value("zoom");
     int pos = ui->cbZoom->findText(zoom.toString());
     if (pos == -1) {
@@ -113,7 +114,7 @@ Form::~Form()
 
 void Form::startLogin(bool bForce)
 {
-    m_pOauth2->startLogin(bForce);
+    m_pOAuth2->startLogin(bForce);
 }
 
 void Form::loginDone()
@@ -121,7 +122,7 @@ void Form::loginDone()
     m_loginCompleted = true;
     if (m_pageLoaded) {
         clearTwHistory();
-        m_pManager->getCurrentLocation(m_pOauth2->accessToken());
+        m_pManager->getCurrentLocation(m_pOAuth2->accessToken());
     }
 }
 /*! \brief Handler for signal errorOccured
@@ -141,7 +142,7 @@ void Form::onErrorOccured(const QString& error)
 
 void Form::showCurrentLocation()
 {
-    m_pManager->getCurrentLocation(m_pOauth2->accessToken());
+    m_pManager->getCurrentLocation(m_pOAuth2->accessToken());
 }
 
 QString Form::convertMs2String(qlonglong ms)
@@ -157,7 +158,7 @@ void Form::onLoadFinished(bool ok)
         disconnect(ui->webView, SIGNAL(loadFinished(bool)),this, SLOT(onLoadFinished(bool)));
         m_pageLoaded = true;
         if (m_loginCompleted) {
-            m_pManager->getCurrentLocation(m_pOauth2->accessToken());
+            m_pManager->getCurrentLocation(m_pOAuth2->accessToken());
         }
     }
 }
@@ -197,12 +198,12 @@ void Form::onCurrentLocationReady()
 {
     const QVariant& location = m_pManager->currentLocation();
     gotoLocation(location);
-    m_pManager->getLocationHistory(m_pOauth2->accessToken());
+    m_pManager->getLocationHistory(m_pOAuth2->accessToken());
 }
 
 void Form::getHistoryLocation()
 {
-    m_pManager->getLocationHistory(m_pOauth2->accessToken());
+    m_pManager->getLocationHistory(m_pOAuth2->accessToken());
 }
 
 void Form::onLocationHistoryReady()
@@ -267,19 +268,19 @@ void Form::onClickedGo()
     }
     else
     {
-        m_pManager->getLocationsFromAddress(ui->cbAddress->currentText(),m_pOauth2->geocodingKey());
+        m_pManager->getLocationsFromAddress(ui->cbAddress->currentText(),m_pOAuth2->geocodingKey());
     }
 }
 
 void Form::onClickedInsert()
 {
-    m_pManager->insertLocation(m_location,m_pOauth2->accessToken());
+    m_pManager->insertLocation(m_location,m_pOAuth2->accessToken());
 }
 
 void Form::saveSettings()
 {
-    m_pSettings->setValue("access_token",m_pOauth2->accessToken());
-    m_pSettings->setValue("refresh_token",m_pOauth2->getRefreshToken());
+    m_pSettings->setValue("access_token",m_pOAuth2->accessToken());
+    m_pSettings->setValue("refresh_token",m_pOAuth2->refreshToken());
     m_pSettings->setValue("zoom",ui->cbZoom->currentText());
     m_pSettings->setValue("map_type",ui->cbMapType->currentText());
     m_pSettings->setValue("address",ui->cbAddress->currentText());
@@ -318,7 +319,7 @@ void Form::onDelete()
     }
 
     int row = selectedRanges.first().topRow();
-    m_pManager->deleteLocation(row,m_pOauth2->accessToken());
+    m_pManager->deleteLocation(row,m_pOAuth2->accessToken());
 }
 
 void Form::onInsertCurrentLocation()
@@ -329,7 +330,7 @@ void Form::onInsertCurrentLocation()
     }
 
     int row = selectedRanges.first().topRow();
-    m_pManager->insertCurrentLocation(row,m_pOauth2->accessToken());
+    m_pManager->insertCurrentLocation(row,m_pOAuth2->accessToken());
 }
 
 void Form::clearTwHistory()

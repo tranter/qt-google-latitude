@@ -64,17 +64,6 @@ void LoginDialog::urlChanged(const QUrl &url)
     }
 }
 
-QString LoginDialog::accessToken()
-{
-    return m_strAccessToken;
-}
-
-QString LoginDialog::code()
-{
-    return m_strCode;
-}
-
-
 void LoginDialog::setLoginUrl(const QString& url)
 {
    ui->webView->setUrl(QUrl(url));

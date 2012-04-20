@@ -17,8 +17,8 @@ public:
     explicit LoginDialog(QWidget *parent = 0);
     ~LoginDialog();
     void setLoginUrl(const QString& url);
-    QString accessToken();
-    QString code();
+    QString accessToken() {return m_strAccessToken;}
+    QString code() {return m_strCode;}
 
 signals:
     void accessTokenObtained();
