@@ -21,10 +21,12 @@ public:
     void insertLocation(const QVariant& location, const QString& access_token);
     void deleteLocation(int row, const QString& access_token);
     void insertCurrentLocation(int row, const QString& access_token);
+    void getUserEmail(const QString& access_token);
 
     const QVariant& currentLocation() {return m_currentLocation;}
     const QVariantList& locationHistory() {return m_locationHistory;}
     const QVariantList& addressLocationsList() {return m_addressLocationsList;}
+    QString userEmail() {return m_strUserEmail;}
 
 signals:
     void errorOccured(const QString& error);
@@ -33,6 +35,7 @@ signals:
     void addressLocationsListReady();
     void locationInserted();
     void locationDeleted();
+    void sigUserEmailReady();
 
 private slots:
     void replyFinished(QNetworkReply*);
@@ -42,6 +45,7 @@ private:
     QVariant m_currentLocation;
     QVariantList m_locationHistory;
     QVariantList m_addressLocationsList;
+    QString m_strUserEmail;
 };
 
 #endif // LATITUDEDATAMANAGER_H

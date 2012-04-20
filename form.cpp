@@ -55,6 +55,7 @@ Form::Form(QWidget *parent) :
     connect(m_pOAuth2, SIGNAL(loginDone()), this, SLOT(loginDone()));
     connect(m_pOAuth2, SIGNAL(sigErrorOccured(QString)),this,SLOT(onErrorOccured(QString)));
     connect(m_pManager, SIGNAL(errorOccured(QString)),this,SLOT(onErrorOccured(QString)));
+    connect(m_pManager, SIGNAL(sigUserEmailReady()),this,SLOT(onUserEmailReady()));
     connect(m_pManager, SIGNAL(currentLocationReady()),this,SLOT(onCurrentLocationReady()));
     connect(m_pManager, SIGNAL(locationHistoryReady()),this,SLOT(onLocationHistoryReady()));
     connect(m_pManager, SIGNAL(addressLocationsListReady()),this,SLOT(onAddressLocationsListReady()));
@@ -119,6 +120,12 @@ void Form::startLogin(bool bForce)
 
 void Form::loginDone()
 {
+    m_pManager->getUserEmail(m_pOAuth2->accessToken());
+}
+
+void Form::onUserEmailReady()
+{
+    ui->userEmail->setText(m_pManager->userEmail());
     m_loginCompleted = true;
     if (m_pageLoaded) {
         clearTwHistory();

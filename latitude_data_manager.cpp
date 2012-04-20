@@ -111,6 +111,14 @@ void LatitudeDataManager::insertCurrentLocation(int row, const QString& access_t
     m_pNetworkAccessManager->post(request, params);
 }
 
+void LatitudeDataManager::getUserEmail(const QString& access_token)
+{
+    QString query = QString("https://www.googleapis.com/oauth2/v1/userinfo"
+                            "?access_token=%1")
+            .arg(access_token);
+    m_pNetworkAccessManager->get(QNetworkRequest(QUrl(query)));
+}
+
 void LatitudeDataManager::replyFinished(QNetworkReply *reply)
 {
     QString url = reply->url().toString();
@@ -166,6 +174,10 @@ void LatitudeDataManager::replyFinished(QNetworkReply *reply)
             m_addressLocationsList.clear();
         }
         emit addressLocationsListReady();
+        return;
+    } else if (url.contains("userinfo")) {
+        m_strUserEmail = result.toMap()["email"].toString();
+        emit sigUserEmailReady();
         return;
     }
 }

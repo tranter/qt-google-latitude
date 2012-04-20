@@ -29,6 +29,7 @@ private slots:
     void loginDone();
     void onErrorOccured(const QString& error);
     void onLoadFinished(bool ok);
+    void onUserEmailReady();
     void onCurrentLocationReady();
     void onLocationHistoryReady();
     void onAddressLocationsListReady();
