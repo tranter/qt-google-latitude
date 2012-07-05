@@ -21,6 +21,7 @@ OAuth2::OAuth2(QWidget* parent)
     m_strClientID = "YOUR_CLIENT_ID_HERE";
     m_strClientSecret = "YOUR_CLIENT_SECRET_HERE";
     m_strRedirectURI = "YOUR_REDIRECT_URI_HERE";
+    m_apiKeyGeocoding = "YOUR_API_KEY_HERE";
 
     m_pLoginDialog = NULL;
     m_pParent = parent;
@@ -30,7 +31,6 @@ OAuth2::OAuth2(QWidget* parent)
     connect(m_pNetworkAccessManager, SIGNAL(finished(QNetworkReply*)),
             this, SLOT(replyFinished(QNetworkReply*)));
 
-    m_apiKeyGeocoding = "ABQIAAAA672lORl8GepdWKC0IpTyLBRwyA1oHr6mUau5K-dsEYfkoQ5xchQi9OlnyPRXXvt0X-CWsz8S660ZVg";
 }
 
 QString OAuth2::geocodingKey()
